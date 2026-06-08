@@ -1,0 +1,67 @@
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Cormorant Garamond", "Playfair Display", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+html {
+  scroll-behavior: smooth;
+  background-color: #050505; /* Deep Black background */
+}
+
+body {
+  background-color: #050505;
+  color: #ffffff;
+}
+
+/* Micro smooth animations and custom inputs for premium dark theme */
+input, textarea, select {
+  outline: none;
+  background-color: rgba(17, 17, 17, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  border-radius: 4px; /* Minimalist sleek border radius to match IMMERSIVE UI */
+  padding: 0.75rem 1rem;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #C16B5C; /* Elegant Terracotta Accent */
+  box-shadow: 0 0 0 3px rgba(193, 107, 92, 0.15);
+}
+
+/* Scrollbar customization for high-end dark browser feel */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #050505;
+}
+::-webkit-scrollbar-thumb {
+  background: #111111;
+  border: 2px solid #050505;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C16B5C;
+}
+
+/* Print-optimized stylesheet for instant clean PDF creation on Device */
+@media print {
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  .no-print {
+    display: none !important;
+  }
+  #floorplan-section, .print-card {
+    border: 1px solid #ccc !important;
+    background: transparent !important;
+    color: black !important;
+    page-break-inside: avoid;
+  }
+}

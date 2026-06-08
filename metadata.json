@@ -1,0 +1,6 @@
+{
+  "name": "Rezidence Předboj",
+  "description": "Moderní webová prezentace luxusního prodeje rodinného domu 6+kk v klidné obci Předboj, Praha-východ s bazénem, garáží a velkou zahradou.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
