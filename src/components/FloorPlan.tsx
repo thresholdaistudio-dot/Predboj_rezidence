@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { 
   Home, 
@@ -379,27 +379,7 @@ export default function FloorPlan() {
   const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
   const [lightboxRoom, setLightboxRoom] = useState<InteractiveRoom | null>(null);
   const [gardenLightboxPhoto, setGardenLightboxPhoto] = useState<string | null>(null);
-  const [aspectRatios, setAspectRatios] = useState<Record<string, number>>({
-    "1.NP": 1.33,
-    "2.NP": 1.33
-  });
-
-  // Preload both floorplans on mount
-  useEffect(() => {
-    FLOORS_DATA.forEach((floor) => {
-      const img = new Image();
-      img.referrerPolicy = "no-referrer";
-      img.src = floor.imageUrl;
-      img.onload = () => {
-        if (img.naturalWidth && img.naturalHeight) {
-          setAspectRatios(prev => ({
-            ...prev,
-            [floor.level]: img.naturalWidth / img.naturalHeight
-          }));
-        }
-      };
-    });
-  }, []);
+  const [imageAspect, setImageAspect] = useState<number | null>(null);
 
   const activeFloorIdx = activeTab === "2.NP" ? 1 : 0;
   const currentFloor = FLOORS_DATA[activeFloorIdx];
@@ -408,6 +388,7 @@ export default function FloorPlan() {
 
   const handleFloorChange = (tab: "1.NP" | "2.NP") => {
     setActiveTab(tab);
+    setImageAspect(null);
     const idx = tab === "2.NP" ? 1 : 0;
     const floor = FLOORS_DATA[idx];
     // Default to the first room of that floor (id: 1)
@@ -670,44 +651,30 @@ export default function FloorPlan() {
                   <div 
                     style={{ 
                       position: "relative", 
-                      width: "100%", 
-                      height: "100%",
-                      aspectRatio: `${aspectRatios[currentFloor.level] || 1.33}` 
+                      width: imageAspect ? undefined : "100%", 
+                      height: imageAspect ? undefined : "100%",
+                      aspectRatio: imageAspect ? `${imageAspect}` : undefined 
                     }}
                     className="max-w-full max-h-[40vh] sm:max-h-[50vh] md:max-h-[58vh] flex items-center justify-center select-none"
                     onMouseMove={handleMouseMove}
                   >
-                    {FLOORS_DATA.map((floor, idx) => {
-                      const isActive = activeTab === floor.level;
-                      return (
-                        <img 
-                          key={floor.level}
-                          src={floor.imageUrl} 
-                          alt={`${floor.level} 3D půdorys`}
-                          referrerPolicy="no-referrer"
-                          style={{ 
-                            width: "100%", 
-                            height: "100%", 
-                            display: isActive ? "block" : "none", 
-                            mixBlendMode: "multiply" 
-                          }}
-                          className="select-none drop-shadow-[0_12px_22px_rgba(0,0,0,0.6)]"
-                          onLoad={(e) => {
-                            const img = e.currentTarget;
-                            if (img.naturalWidth && img.naturalHeight) {
-                              setAspectRatios(prev => ({
-                                ...prev,
-                                [floor.level]: img.naturalWidth / img.naturalHeight
-                              }));
-                            }
-                          }}
-                          onError={(e) => {
-                            const target = e.target as HTMLImageElement;
-                            target.src = `https://picsum.photos/seed/residence-3d-fallback-${idx}/640/480`;
-                          }}
-                        />
-                      );
-                    })}
+                    <img 
+                      src={currentFloor.imageUrl} 
+                      alt={`${currentFloor.level} 3D půdorys`}
+                      referrerPolicy="no-referrer"
+                      style={{ width: "100%", height: "100%", display: "block", mixBlendMode: "multiply" }}
+                      className="select-none drop-shadow-[0_12px_22px_rgba(0,0,0,0.6)]"
+                      onLoad={(e) => {
+                        const img = e.currentTarget;
+                        if (img.naturalWidth && img.naturalHeight) {
+                          setImageAspect(img.naturalWidth / img.naturalHeight);
+                        }
+                      }}
+                      onError={(e) => {
+                        const target = e.target as HTMLImageElement;
+                        target.src = `https://picsum.photos/seed/residence-3d-fallback-${activeFloorIdx}/640/480`;
+                      }}
+                    />
 
                     {/* Circular clickable buttons exactly over the numbers in the image */}
                     {currentFloor.rooms.map((room) => {
